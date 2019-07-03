@@ -19,7 +19,7 @@ namespace HelloWorld.Tests
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
 
-            var json = JsonConvert.SerializeObject(new object { });
+            var json = JsonConvert.SerializeObject(new { });
 
             sw.Write(json);
             sw.Flush();
@@ -40,10 +40,48 @@ namespace HelloWorld.Tests
             var logger = A.Fake<ILogger>();
             var request = A.Fake<HttpRequest>();
 
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+
+            var json = JsonConvert.SerializeObject(new { });
+
+            sw.Write(json);
+            sw.Flush();
+
+            ms.Position = 0;
+
+            request.Body = ms;
+            request.QueryString = new QueryString("?name=neal");
+
             var result = await HelloWorld.Run(request, logger);
 
             Assert.NotNull(result);
-            //TODO
+            Assert.IsType<Microsoft.AspNetCore.Mvc.OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task HelloWorld_NamePassedInBody_OkObjectResult()
+        {
+            var logger = A.Fake<ILogger>();
+            var request = A.Fake<HttpRequest>();
+
+            var ms = new MemoryStream();
+            var sw = new StreamWriter(ms);
+
+            var json = JsonConvert.SerializeObject(new { name = "Neal"});
+
+            sw.Write(json);
+            sw.Flush();
+
+            ms.Position = 0;
+
+            request.Body = ms;
+
+            var result = await HelloWorld.Run(request, logger);
+
+            Assert.NotNull(result);
+            Assert.IsType<Microsoft.AspNetCore.Mvc.OkObjectResult>(result);
+            Assert.Equal("Hello, Neal", ((Microsoft.AspNetCore.Mvc.OkObjectResult)result).Value);
         }
     }
 }
