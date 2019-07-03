@@ -1,7 +1,10 @@
 ﻿using FakeItEasy;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -51,7 +54,10 @@ namespace HelloWorld.Tests
             ms.Position = 0;
 
             request.Body = ms;
-            request.QueryString = new QueryString("?name=neal");
+            var content = new Dictionary<string, StringValues>();
+            content["name"] = "Neal";
+
+            request.Query = new QueryCollection(content);
 
             var result = await HelloWorld.Run(request, logger);
 
