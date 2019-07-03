@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +9,9 @@ using Newtonsoft.Json;
 
 namespace HelloWorld
 {
-    public static class Function1
+    public static class HelloWorld
     {
-        [FunctionName("Function1")]
+        [FunctionName("HelloWorld")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
